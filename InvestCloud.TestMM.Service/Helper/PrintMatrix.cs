@@ -1,23 +1,44 @@
-﻿namespace InvestCloud.TestMM.Service.Helper;
+﻿using InvestCloud.TestMM.Service.Interface;
+using Microsoft.Extensions.Logging;
 
-public class PrintMatrix
+namespace InvestCloud.TestMM.Service.Helper;
+
+public class PrintMatrix : IPrintMatrix
 {
+    private readonly ILogger<PrintMatrix> _logger;
+
+    public PrintMatrix(ILogger<PrintMatrix> logger)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Prints a presentation of a two-dimensional array in an X and Y format for TESTING to the Console
     /// </summary>
     /// <param name="name">Name of Array</param>
     /// <param name="matrix">two-dimensional array</param>
-    public static void Print2DimensionalArray(string name, int[,] matrix)
+    public void Print2DimensionalArray(string name, int[,] matrix)
     {
-        Console.WriteLine($"{name}:");
-        for (var i = 0; i < matrix.GetLength(0); i++)
+        try
         {
-            for (var j = 0; j < matrix.GetLength(1); j++)
+            Console.Write($"{name}:");
+            Console.WriteLine();
+            for (var i = 0; i < matrix.GetLength(0); i++)
             {
-                Console.Write(matrix[i, j] + " ");
+                for (var j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(matrix[i, j] + " ");
+                }
+
+                Console.WriteLine();
             }
+
             Console.WriteLine();
         }
-        Console.WriteLine();
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
     }
+
 }

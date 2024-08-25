@@ -1,83 +1,115 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using InvestCloud.TestMM.Service.API;
 using InvestCloud.TestMM.Service.Helper;
+using InvestCloud.TestMM.Service.Interface;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using RestSharp;
 
-namespace MatrixMultiplication
+namespace InvestCloud.TestMM.App;
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var timer = new Stopwatch();
-            timer.Start();
+        var services = CreateServices();
+        var IMatrixOperations = services.GetRequiredService<IMatrixOperations>();
+        var IPrintMatrix = services.GetRequiredService<IPrintMatrix>();
+        var INumbersClient = services.GetRequiredService<INumbersClient>();
 
-            int size = 3;
+        var timer = new Stopwatch();
+        timer.Start();
 
-            Console.WriteLine($"Starting...  Size: {size}");
-            Console.WriteLine();
+        int size = 3;
 
-            var client = new NumbersClient();
-            if (!client.InitializeData(size).Result) throw new Exception("ERROR: Cannot Initialize Data !!!");
-            var listForMatrixA = client.RetrievesCollectionBy_DataSet_Type_Index("A", "row", size).Result;
-            var listForMatrixB = client.RetrievesCollectionBy_DataSet_Type_Index("B", "row", size).Result;
+        Console.WriteLine($"Starting...  Size: {size}");
+        Console.WriteLine();
 
-            //Declare and initialize two two-dimensional arrays, X and Y.
-            int[,] matrixA = new int[size, size];
-            int[,] matrixB = new int[size, size];
+        if (!INumbersClient.InitializeData(size).Result) throw new Exception("ERROR: Cannot Initialize Data !!!");
+        //var listForMatrixA = client.RetrievesCollectionBy_DataSet_Type_Index("A", "row", size).Result;
+        //var listForMatrixB = client.RetrievesCollectionBy_DataSet_Type_Index("B", "row", size).Result;
 
-            // Loop through the arrays X and Y and add the corresponding element.
-            for (int i = 0; i < listForMatrixA.Count; i++)
-            {
-                for (int j = 0; j < listForMatrixA[i].Value.Length; j++)
-                    matrixA[i, j] = listForMatrixA[i].Value[j];
-            }
+        //Declare and initialize two two-dimensional arrays, X and Y.
+        int[,] matrixA = new int[size, size];
+        int[,] matrixB = new int[size, size];
 
-            // Loop through the arrays X and Y and add the corresponding element.
-            for (int i = 0; i < listForMatrixB.Count; i++)
-            {
-                for (int j = 0; j < listForMatrixB[i].Value.Length; j++)
-                    matrixB[i, j] = listForMatrixB[i].Value[j];
-            }
+        //// Loop through the arrays X and Y and add the corresponding element.
+        //for (int i = 0; i < listForMatrixA.Count; i++)
+        //{
+        //    for (int j = 0; j < listForMatrixA[i].Value.Length; j++)
+        //        matrixA[i, j] = listForMatrixA[i].Value[j];
+        //}
 
-            // TEST CASE (Small sub-set of data)
-            // https://recruitment-test.investcloud.com/api/numbers/init/2
-            //int[,] matrixA = { { 1, 0 }, { 0, -1 } };
-            //int[,] matrixB = { { 0, -1 }, { -1, -1 } };
+        //// Loop through the arrays X and Y and add the corresponding element.
+        //for (int i = 0; i < listForMatrixB.Count; i++)
+        //{
+        //    for (int j = 0; j < listForMatrixB[i].Value.Length; j++)
+        //        matrixB[i, j] = listForMatrixB[i].Value[j];
+        //}
 
-            //// https://recruitment-test.investcloud.com/api/numbers/init/3
-            //int[,] matrixA = { { 0, -2, -2 }, { -2, -2, 0 }, { -2, 0, 1 } };
-            //int[,] matrixB = { { -2, -1, 0 }, { -1, 0, 2 }, { 0, 2, 2 } };
+        // TEST CASE (Small sub-set of data)
+        // https://recruitment-test.investcloud.com/api/numbers/init/2
+        //int[,] matrixA = { { 1, 0 }, { 0, -1 } };
+        //int[,] matrixB = { { 0, -1 }, { -1, -1 } };
 
-            int[,] matrixC = MatrixOperations.MultiplyMatrices(matrixA, matrixB);
+        //// https://recruitment-test.investcloud.com/api/numbers/init/3
+        //int[,] matrixA = { { 0, -2, -2 }, { -2, -2, 0 }, { -2, 0, 1 } };
+        //int[,] matrixB = { { -2, -1, 0 }, { -1, 0, 2 }, { 0, 2, 2 } };
 
-            ////Display the elements of the array [TESTING].
-            PrintMatrix.Print2DimensionalArray("matrixA", matrixA);
-            PrintMatrix.Print2DimensionalArray("matrixB", matrixB);
-            PrintMatrix.Print2DimensionalArray("matrixC", matrixC);
+        int[,] matrixC = IMatrixOperations.MultiplyMatrices(matrixA, matrixB);
 
-            var concatenatedString = string.Join("", matrixC.Cast<int>());
+        ////Display the elements of the array [TESTING].
+        IPrintMatrix.Print2DimensionalArray("matrixA", matrixA);
+        IPrintMatrix.Print2DimensionalArray("matrixB", matrixB);
+        IPrintMatrix.Print2DimensionalArray("matrixC", matrixC);
 
-            //Console.WriteLine("Concatenated String:");
-            //Console.WriteLine(concatenatedString);
-            //Console.WriteLine();
+        var concatenatedString = string.Join("", matrixC.Cast<int>());
 
-            var md5Hash = MatrixOperations.GenerateMD5(concatenatedString);
+        //Console.WriteLine("Concatenated String:");
+        //Console.WriteLine(concatenatedString);
+        //Console.WriteLine();
 
-            timer.Stop();
+        var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);
 
-            TimeSpan timeTaken = timer.Elapsed;
-            Console.WriteLine($"Finished !! Time taken: {timeTaken:m\\:ss\\.fff}");
+        timer.Stop();
 
-            Console.WriteLine();
-            Console.WriteLine("md5 Hash:");
-            Console.WriteLine(md5Hash);
-            Console.WriteLine();
+        TimeSpan timeTaken = timer.Elapsed;
+        Console.WriteLine($"Finished !! Time taken: {timeTaken:m\\:ss\\.fff}");
 
-            Console.WriteLine("Validating:");
-            var msg = client.Validate(md5Hash).Result;
-            Console.WriteLine(msg);
-            Console.WriteLine();
-        }
+        Console.WriteLine();
+        Console.WriteLine("md5 Hash:");
+        Console.WriteLine(md5Hash);
+        Console.WriteLine();
 
+        Console.WriteLine("Validating:");
+        //var msg = client.Validate(md5Hash).Result;
+        //Console.WriteLine(msg);
+        Console.WriteLine();
     }
+
+    private static ServiceProvider CreateServices()
+    {
+        //setup our DI
+        var serviceProvider = new ServiceCollection()
+            .AddLogging(options =>
+            {
+                options.ClearProviders();
+                options.AddConsole();
+            })
+            .AddSingleton<IMatrixOperations, MatrixOperations>()
+            .AddSingleton<IPrintMatrix, PrintMatrix>()
+            .AddSingleton<INumbersClient, NumbersClient>()
+            .BuildServiceProvider();
+
+  
+        //configure console logging
+        serviceProvider.GetService<ILoggerFactory>();
+
+        var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>();
+        logger.LogDebug("Starting InvestCloud.TestMM.App");
+
+        return serviceProvider;
+    }
+
 }
