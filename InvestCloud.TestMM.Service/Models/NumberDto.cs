@@ -1,15 +1,14 @@
 ﻿namespace InvestCloud.TestMM.Service.Models;
 
-public class NumberDto
+public class NumberDto : ResponseBase
 {
-    public NumberDto(int value, string cause, bool success)
+    public NumberDto(int value, string cause, bool success) : base(cause, success)
     {
         Value = value;
-        Cause = cause;
-        Success = success;
+        this.Cause = cause;
+        this.Success = success;
     }
 
     public int Value { get; set; }
-    public string Cause { get; set; }
-    public bool Success { get; set; }
+
 }
