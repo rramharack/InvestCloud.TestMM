@@ -1,8 +1,7 @@
 ﻿using InvestCloud.TestMM.Service.Models;
 
 namespace InvestCloud.TestMM.Service.Interface;
-
-public interface INumbersClient
+public interface INumbersClient_Alt
 {
     public Task<bool> InitializeData(int size);
 

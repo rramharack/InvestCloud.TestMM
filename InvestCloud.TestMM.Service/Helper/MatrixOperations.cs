@@ -61,7 +61,6 @@ public class MatrixOperations : IMatrixOperations
         }
         return new int[0, 0];
     }
-
     private int Multiply_MatrixA_Row_To_MatrixB_Column(int[,] matrixA, int currentIndex, int nextValue, int sizeOfMatrix, int[,] matrixB)
     {
         var matrixCValue = 0;
@@ -70,7 +69,6 @@ public class MatrixOperations : IMatrixOperations
 
         return matrixCValue;
     }
-
     public string GenerateMD5(string concatenatedString)
     {
         return string.Join("", MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(concatenatedString)).Select(s => s.ToString("X2")));

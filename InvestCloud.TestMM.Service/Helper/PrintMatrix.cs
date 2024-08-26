@@ -1,9 +1,8 @@
-﻿using InvestCloud.TestMM.Service.Interface;
+﻿using InvestCloud.TestMM.Service.Models;
 using Microsoft.Extensions.Logging;
 
 namespace InvestCloud.TestMM.Service.Helper;
-
-public class PrintMatrix : IPrintMatrix
+public class PrintMatrix : BasePrint
 {
     private readonly ILogger<PrintMatrix> _logger;
 
@@ -17,10 +16,11 @@ public class PrintMatrix : IPrintMatrix
     /// </summary>
     /// <param name="name">Name of Array</param>
     /// <param name="matrix">two-dimensional array</param>
-    public void Print2DimensionalArray(string name, int[,] matrix)
+    public override void Print2DimensionalArray(string name, int[,] matrix)
     {
         try
         {
+            //base.Print2DimensionalArray(name, matrix); return;
             Console.Write($"{name}:");
             Console.WriteLine();
             for (var i = 0; i < matrix.GetLength(0); i++)
@@ -41,4 +41,24 @@ public class PrintMatrix : IPrintMatrix
         }
     }
 
+    public override void Display2DimensionalArray(int[,] matrixA, int[,] matrixB, int[,] matrixC, string concatenatedString)
+    {
+        Print2DimensionalArray("matrixA", matrixA);
+        Print2DimensionalArray("matrixB", matrixB);
+        Print2DimensionalArray("matrixC", matrixC);
+
+        Console.WriteLine("Concatenated String:");
+        Console.WriteLine(concatenatedString);
+        Console.WriteLine();
+    }
+
+    public override void DisplayCompletedTimeAndMd5Hash(TimeSpan timeTaken, string md5Hash)
+    {
+        Console.WriteLine($"Finished !! Time taken: {timeTaken:m\\:ss\\.fff}");
+
+        Console.WriteLine();
+        Console.WriteLine("md5 Hash:");
+        Console.WriteLine(md5Hash);
+        Console.WriteLine();
+    }
 }

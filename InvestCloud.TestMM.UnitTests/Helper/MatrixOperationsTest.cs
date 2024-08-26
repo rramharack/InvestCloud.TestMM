@@ -2,11 +2,9 @@
 using Moq;
 
 namespace InvestCloud.TestMM.UnitTests.Helper;
-
 public class MatrixOperationsTest
 {
     private readonly Mock<MatrixOperations> MockMatrixOperations;
-
     public MatrixOperationsTest()
     {
         MockMatrixOperations = new Mock<MatrixOperations>();

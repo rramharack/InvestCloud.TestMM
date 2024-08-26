@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using InvestCloud.TestMM.Service.API;
+using InvestCloud.TestMM.Service.Common.Enum;
 using InvestCloud.TestMM.Service.Helper;
 using InvestCloud.TestMM.Service.Interface;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,39 +14,41 @@ internal class Program
     static void Main(string[] args)
     {
         var services = CreateServices();
-        var IMatrixOperations = services.GetRequiredService<IMatrixOperations>();
-        var IPrintMatrix = services.GetRequiredService<IPrintMatrix>();
-        var INumbersClient = services.GetRequiredService<INumbersClient>();
+
+        var IMatrixOperations = services.GetService<IMatrixOperations>();
+        var IPrintMatrix = services.GetService<IPrintMatrix>();
+        var INumbersClient = services.GetService<INumbersClient>();
+        var INumbersClient_Alt = services.GetService<INumbersClient_Alt>();
+
+        int size = 4;
 
         var timer = new Stopwatch();
         timer.Start();
 
-        int size = 3;
+        if (!INumbersClient.InitializeData(size).Result) // *** Uses RestSharp *** 
+            //if (!INumbersClient_Alt.InitializeData(size).Result) *** Uses HttpClient *** 
+            throw new Exception("ERROR: Cannot Initialize Data !!!");
 
-        Console.WriteLine($"Starting...  Size: {size}");
-        Console.WriteLine();
-
-        if (!INumbersClient.InitializeData(size).Result) throw new Exception("ERROR: Cannot Initialize Data !!!");
-        //var listForMatrixA = client.RetrievesCollectionBy_DataSet_Type_Index("A", "row", size).Result;
-        //var listForMatrixB = client.RetrievesCollectionBy_DataSet_Type_Index("B", "row", size).Result;
+        var listForMatrixA = INumbersClient.RetrievesCollectionBy_DataSet_Type_Index(DataSetEnum.A.ToString(), TypeEnum.row.ToString(), size).Result;
+        var listForMatrixB = INumbersClient.RetrievesCollectionBy_DataSet_Type_Index(DataSetEnum.B.ToString(), TypeEnum.row.ToString(), size).Result;
 
         //Declare and initialize two two-dimensional arrays, X and Y.
         int[,] matrixA = new int[size, size];
         int[,] matrixB = new int[size, size];
 
-        //// Loop through the arrays X and Y and add the corresponding element.
-        //for (int i = 0; i < listForMatrixA.Count; i++)
-        //{
-        //    for (int j = 0; j < listForMatrixA[i].Value.Length; j++)
-        //        matrixA[i, j] = listForMatrixA[i].Value[j];
-        //}
+        // Loop through the arrays X and Y and add the corresponding element.
+        for (int i = 0; i < listForMatrixA.Count; i++)
+        {
+            for (int j = 0; j < listForMatrixA[i].Value.Length; j++)
+                matrixA[i, j] = listForMatrixA[i].Value[j];
+        }
 
-        //// Loop through the arrays X and Y and add the corresponding element.
-        //for (int i = 0; i < listForMatrixB.Count; i++)
-        //{
-        //    for (int j = 0; j < listForMatrixB[i].Value.Length; j++)
-        //        matrixB[i, j] = listForMatrixB[i].Value[j];
-        //}
+        // Loop through the arrays X and Y and add the corresponding element.
+        for (int i = 0; i < listForMatrixB.Count; i++)
+        {
+            for (int j = 0; j < listForMatrixB[i].Value.Length; j++)
+                matrixB[i, j] = listForMatrixB[i].Value[j];
+        }
 
         // TEST CASE (Small sub-set of data)
         // https://recruitment-test.investcloud.com/api/numbers/init/2
@@ -58,58 +60,41 @@ internal class Program
         //int[,] matrixB = { { -2, -1, 0 }, { -1, 0, 2 }, { 0, 2, 2 } };
 
         int[,] matrixC = IMatrixOperations.MultiplyMatrices(matrixA, matrixB);
-
-        ////Display the elements of the array [TESTING].
-        IPrintMatrix.Print2DimensionalArray("matrixA", matrixA);
-        IPrintMatrix.Print2DimensionalArray("matrixB", matrixB);
-        IPrintMatrix.Print2DimensionalArray("matrixC", matrixC);
-
         var concatenatedString = string.Join("", matrixC.Cast<int>());
 
-        //Console.WriteLine("Concatenated String:");
-        //Console.WriteLine(concatenatedString);
-        //Console.WriteLine();
+        // Display the elements of the array [TESTING].
+        if (size < 4)
+            IPrintMatrix?.Display2DimensionalArray(matrixA, matrixB, matrixC, concatenatedString);
 
         var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);
-
         timer.Stop();
-
         TimeSpan timeTaken = timer.Elapsed;
-        Console.WriteLine($"Finished !! Time taken: {timeTaken:m\\:ss\\.fff}");
-
-        Console.WriteLine();
-        Console.WriteLine("md5 Hash:");
-        Console.WriteLine(md5Hash);
-        Console.WriteLine();
+        IPrintMatrix?.DisplayCompletedTimeAndMd5Hash(timeTaken, md5Hash);
 
         Console.WriteLine("Validating:");
-        //var msg = client.Validate(md5Hash).Result;
-        //Console.WriteLine(msg);
+        var msg = INumbersClient.Validate(md5Hash).Result;
+        Console.WriteLine(msg);
         Console.WriteLine();
     }
 
     private static ServiceProvider CreateServices()
     {
-        //setup our DI
+        // Setup DI
         var serviceProvider = new ServiceCollection()
             .AddLogging(options =>
             {
                 options.ClearProviders();
                 options.AddConsole();
             })
-            .AddSingleton<IMatrixOperations, MatrixOperations>()
-            .AddSingleton<IPrintMatrix, PrintMatrix>()
-            .AddSingleton<INumbersClient, NumbersClient>()
+            .AddScoped<IMatrixOperations, MatrixOperations>()
+            .AddScoped<IPrintMatrix, PrintMatrix>()
+            .AddSingleton<IRestClient, RestClient>()
+            .AddTransient<INumbersClient, NumbersClient>()
+            .AddSingleton<INumbersClient_Alt, NumbersClient_Alt>()
             .BuildServiceProvider();
 
-  
-        //configure console logging
+        // Configure Logging
         serviceProvider.GetService<ILoggerFactory>();
-
-        var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>();
-        logger.LogDebug("Starting InvestCloud.TestMM.App");
-
         return serviceProvider;
     }
-
 }
