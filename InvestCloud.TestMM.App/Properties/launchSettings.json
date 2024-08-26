@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InvestCloud.TestMM.App": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNETCORE_ENVIRONMENT": "DEV"
+      }
+    }
+  }
+}

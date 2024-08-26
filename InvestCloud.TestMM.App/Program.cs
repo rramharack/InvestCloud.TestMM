@@ -4,6 +4,7 @@ using InvestCloud.TestMM.Service.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InvestCloud.TestMM.App;
+
 internal class Program
 {
     static void Main(string[] args)
@@ -23,7 +24,7 @@ internal class Program
             var numbersClient = INumbersClient ?? throw new ArgumentNullException(nameof(INumbersClient));
             var numbersClient_Alt = INumbersClient_Alt ?? throw new ArgumentNullException(nameof(INumbersClient_Alt));
 
-            int size = 3;
+            int size = Service.Common.App.Settings.DatasetSize;
 
             var timer = new Stopwatch();
             timer.Start();
