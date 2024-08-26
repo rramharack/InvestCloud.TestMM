@@ -44,7 +44,7 @@ public class NumbersClient : INumbersClient
     {
         var request = new RestRequest(App.Settings.Validate, Method.Post);
         var result = await _client.PostAsync<ValidateDto>(request);
-        return result != null ? result.Value : "FAILED TO VALIDATE !!!";
+        return result != null ? result.Value : App.Settings.VALIDATE_FAILED;
     }
 
     #endregion RestSharp
