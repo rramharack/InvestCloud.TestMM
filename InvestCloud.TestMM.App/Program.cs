@@ -7,6 +7,8 @@ namespace InvestCloud.TestMM.App;
 
 internal class Program
 {
+    private static readonly int _size = Service.Common.App.Settings.DatasetSize;
+
     static void Main(string[] args)
     {
         try
@@ -24,23 +26,21 @@ internal class Program
             var numbersClient = INumbersClient ?? throw new ArgumentNullException(nameof(INumbersClient));
             var numbersClient_Alt = INumbersClient_Alt ?? throw new ArgumentNullException(nameof(INumbersClient_Alt));
 
-            int size = Service.Common.App.Settings.DatasetSize;
-
             var timer = new Stopwatch();
             timer.Start();
 
-            if (!INumbersClient.InitializeData(size).Result) //         *** Uses RestSharp  *** 
+            if (!INumbersClient.InitializeData(_size).Result) //         *** Uses RestSharp  *** 
                 //if (!INumbersClient_Alt.InitializeData(size).Result)  *** Uses HttpClient *** 
                 throw new Exception("ERROR: Cannot Initialize Data !!!");
 
-            var matricesData = IMatrixOperations?.GetMultiplyMatricesData(size) ??
-                               throw new ArgumentNullException($"IMatrixOperations?.GetMultiplyMatricesData({size})");
+            var matricesData = IMatrixOperations?.GetMultiplyMatricesData(_size) ??
+                               throw new ArgumentNullException($"IMatrixOperations?.GetMultiplyMatricesData({_size})");
 
             int[,] matrixC = IMatrixOperations?.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
             var concatenatedString = string.Join("", matrixC.Cast<int>());
 
             // Display the elements of the array [TESTING].
-            if (size < 4)
+            if (_size < 4)
                 IPrintMatrix?.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
 
             var md5Hash = IMatrixOperations?.GenerateMD5(concatenatedString);
