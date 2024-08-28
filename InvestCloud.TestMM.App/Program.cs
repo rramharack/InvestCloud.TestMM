@@ -18,32 +18,30 @@ internal class Program
             var IMatrixOperations = services.GetService<IMatrixOperations>();
             var IPrintMatrix = services.GetService<IPrintMatrix>();
             var INumbersClient = services.GetService<INumbersClient>();
-            var INumbersClient_Alt = services.GetService<INumbersClient>();
 
             // Check if created successfully...
             var matrixOperations = IMatrixOperations ?? throw new ArgumentNullException(nameof(IMatrixOperations));
             var printMatrix = IPrintMatrix ?? throw new ArgumentNullException(nameof(IPrintMatrix));
             var numbersClient = INumbersClient ?? throw new ArgumentNullException(nameof(INumbersClient));
-            var numbersClient_Alt = INumbersClient_Alt ?? throw new ArgumentNullException(nameof(INumbersClient_Alt));
 
             var timer = new Stopwatch();
             timer.Start();
 
-            if (!INumbersClient.InitializeData(_size).Result) //            *** Uses RestSharp  *** 
-                //if (!INumbersClient_Alt.InitializeData(_size).Result) //  *** Uses HttpClient *** 
+            //if (!INumbersClient.InitializeData(_size).Result) //  *** Uses RestSharp (TO USE: Update CreateServices()) *** 
+            if (!INumbersClient.InitializeData(_size).Result)   //  *** Uses HttpClient *** 
                 throw new Exception("ERROR: Cannot Initialize Data !!!");
 
-            var matricesData = IMatrixOperations?.GetMultiplyMatricesData(_size) ??
+            var matricesData = IMatrixOperations.GetMultiplyMatricesData(_size) ??
                                throw new ArgumentNullException($"IMatrixOperations?.GetMultiplyMatricesData({_size})");
 
-            int[,] matrixC = IMatrixOperations?.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
+            int[,] matrixC = IMatrixOperations.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
             var concatenatedString = string.Join("", matrixC.Cast<int>());
 
             // Display the elements of the array [TESTING].
             if (_size < 4)
                 IPrintMatrix?.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
 
-            var md5Hash = IMatrixOperations?.GenerateMD5(concatenatedString);
+            var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);
             timer.Stop();
 
             TimeSpan timeTaken = timer.Elapsed;

@@ -21,7 +21,7 @@ public class StartUp
             .AddScoped<IMatrixOperations, MatrixOperations>()
             .AddScoped<IPrintMatrix, PrintMatrix>()
             .AddSingleton<IRestClient, RestClient>()
-            .AddTransient<INumbersClient, NumbersClient>()
+            //.AddTransient<INumbersClient, NumbersClient>()
             .AddTransient<INumbersClient, NumbersClient_Alt>()
             .BuildServiceProvider();
 
