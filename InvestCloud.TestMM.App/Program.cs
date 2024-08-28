@@ -32,29 +32,29 @@ internal class Program
                 throw new Exception("ERROR: Cannot Initialize Data !!!");
 
             var matricesData = IMatrixOperations.GetMultiplyMatricesData(_size) ??
-                               throw new ArgumentNullException($"IMatrixOperations?.GetMultiplyMatricesData({_size})");
+                               throw new ArgumentNullException($"IMatrixOperations.GetMultiplyMatricesData({_size})");
 
             int[,] matrixC = IMatrixOperations.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
             var concatenatedString = string.Join("", matrixC.Cast<int>());
 
             // Display the elements of the array [TESTING].
             if (_size < 4)
-                IPrintMatrix?.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
+                IPrintMatrix.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
 
             var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);
             timer.Stop();
 
             TimeSpan timeTaken = timer.Elapsed;
-            IPrintMatrix?.DisplayCompletedTimeAndMd5Hash(timeTaken, md5Hash);
+            IPrintMatrix.DisplayCompletedTimeAndMd5Hash(timeTaken, md5Hash);
 
-            Console.WriteLine("Validating:");
+            Console.WriteLine(@"Validating:");
             var msg = INumbersClient.Validate(md5Hash).Result;
             Console.WriteLine(msg);
             Console.WriteLine();
         }
         catch (Exception e)
         {
-            Console.WriteLine("ERROR: " + Helper.GetFullMessage(e));
+            Console.WriteLine(@"ERROR: " + Helper.GetFullMessage(e));
         }
     }
 }
