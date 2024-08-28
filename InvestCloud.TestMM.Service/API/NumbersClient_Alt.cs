@@ -1,13 +1,13 @@
 ﻿using InvestCloud.TestMM.Service.Interface;
 using InvestCloud.TestMM.Service.Models;
+using InvestCloud.TestMM.Service.Common;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text;
-using InvestCloud.TestMM.Service.Common;
 
 namespace InvestCloud.TestMM.Service.API;
 
-public class NumbersClient_Alt : INumbersClient_Alt
+public class NumbersClient_Alt : INumbersClient
 {
     #region HttpClient
 

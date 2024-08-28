@@ -1,8 +1,8 @@
 ﻿using InvestCloud.TestMM.Service.Models;
 using InvestCloud.TestMM.Service.Interface;
+using InvestCloud.TestMM.Service.Common;
 using RestSharp;
 using Microsoft.Extensions.Logging;
-using InvestCloud.TestMM.Service.Common;
 
 namespace InvestCloud.TestMM.Service.API;
 

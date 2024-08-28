@@ -22,7 +22,7 @@ public class StartUp
             .AddScoped<IPrintMatrix, PrintMatrix>()
             .AddSingleton<IRestClient, RestClient>()
             .AddTransient<INumbersClient, NumbersClient>()
-            .AddSingleton<INumbersClient_Alt, NumbersClient_Alt>()
+            .AddTransient<INumbersClient, NumbersClient_Alt>()
             .BuildServiceProvider();
 
         // Configure Logging

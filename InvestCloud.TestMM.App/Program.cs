@@ -18,7 +18,7 @@ internal class Program
             var IMatrixOperations = services.GetService<IMatrixOperations>();
             var IPrintMatrix = services.GetService<IPrintMatrix>();
             var INumbersClient = services.GetService<INumbersClient>();
-            var INumbersClient_Alt = services.GetService<INumbersClient_Alt>();
+            var INumbersClient_Alt = services.GetService<INumbersClient>();
 
             // Check if created successfully...
             var matrixOperations = IMatrixOperations ?? throw new ArgumentNullException(nameof(IMatrixOperations));
@@ -29,8 +29,8 @@ internal class Program
             var timer = new Stopwatch();
             timer.Start();
 
-            if (!INumbersClient.InitializeData(_size).Result) //         *** Uses RestSharp  *** 
-                //if (!INumbersClient_Alt.InitializeData(size).Result)  *** Uses HttpClient *** 
+            if (!INumbersClient.InitializeData(_size).Result) //            *** Uses RestSharp  *** 
+                //if (!INumbersClient_Alt.InitializeData(_size).Result) //  *** Uses HttpClient *** 
                 throw new Exception("ERROR: Cannot Initialize Data !!!");
 
             var matricesData = IMatrixOperations?.GetMultiplyMatricesData(_size) ??
