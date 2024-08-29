@@ -29,7 +29,6 @@ public class NumbersClient : INumbersClient
     public async Task<List<List<NumberArrayDto?>>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
     {
         var resultList = new List<List<NumberArrayDto?>>();
-
         var batchSize = App.Settings.BatchSize;
         int numberOfBatches = (int)Math.Ceiling((double)size / batchSize);
 
