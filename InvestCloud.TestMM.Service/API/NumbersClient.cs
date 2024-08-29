@@ -26,18 +26,27 @@ public class NumbersClient : INumbersClient
         return result is { Success: true };
     }
 
-    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
+    public async Task<List<List<NumberArrayDto?>>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
     {
         var listOfNumbers = Enumerable.Range(0, size).ToArray();
-        var tasks = listOfNumbers.Select(async index =>
-        {
-            var result = await _client.GetAsync<NumberArrayDto>(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}");
-            return result;
-        });
+        var resultList = new List<List<NumberArrayDto?>>();
 
-        NumberArrayDto?[] res = await Task.WhenAll(tasks);
-        List<NumberArrayDto?> result = res.Where(r => true).ToList();
-        return result;
+        var batchSize = 100;
+        int numberOfBatches = (int)Math.Ceiling((double)listOfNumbers.Count() / batchSize);
+
+        for (int i = 0; i < numberOfBatches; i++)
+        {
+            var tasks = listOfNumbers.Select(async index =>
+            {
+                var result = await _client.GetAsync<NumberArrayDto>(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}");
+                return result;
+            });
+
+            NumberArrayDto?[] res = await Task.WhenAll(tasks);
+            List<NumberArrayDto?> result = res.Where(r => true).ToList();
+            resultList.Add(result);
+        }
+        return resultList;
     }
 
     public async Task<string> Validate(string md5HashedString)

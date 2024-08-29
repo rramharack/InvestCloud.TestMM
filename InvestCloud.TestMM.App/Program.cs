@@ -8,6 +8,7 @@ namespace InvestCloud.TestMM.App;
 internal class Program
 {
     private static readonly int _size = Service.Common.App.Settings.DatasetSize;
+    private static readonly int _printSize = Service.Common.App.Settings.PrintSize;
 
     static void Main(string[] args)
     {
@@ -38,7 +39,7 @@ internal class Program
             var concatenatedString = string.Join("", matrixC.Cast<int>());
 
             // Display the elements of the array [TESTING].
-            if (_size < 4)
+            if (_size < _printSize)
                 IPrintMatrix.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
 
             var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);

@@ -89,18 +89,22 @@ public class MatrixOperations : IMatrixOperations
         int[,] matrixA = new int[size, size];
         int[,] matrixB = new int[size, size];
 
-        // Loop through the arrays X and Y and add the corresponding element.
-        for (int i = 0; i < listForMatrixA.Count; i++)
+        // Loop through the arrays X and Y and add the corresponding element for matrixA
+        var index = 0;
+        foreach (var item in listForMatrixA.SelectMany(c => c.ToList()))
         {
-            for (int j = 0; j < listForMatrixA[i].Value.Length; j++)
-                matrixA[i, j] = listForMatrixA[i].Value[j];
+            for (int j = 0; j < size; j++)
+                matrixA[index, j] = item.Value[j];
+            index++;
         }
 
-        // Loop through the arrays X and Y and add the corresponding element.
-        for (int i = 0; i < listForMatrixB.Count; i++)
+        // Loop through the arrays X and Y and add the corresponding element for matrixB
+        index = 0;
+        foreach (var item in listForMatrixB.SelectMany(c => c.ToList()))
         {
-            for (int j = 0; j < listForMatrixB[i].Value.Length; j++)
-                matrixB[i, j] = listForMatrixB[i].Value[j];
+            for (int j = 0; j < size; j++)
+                matrixB[index, j] = item.Value[j];
+            index++;
         }
 
         return new MatricesData(matrixA, matrixB);

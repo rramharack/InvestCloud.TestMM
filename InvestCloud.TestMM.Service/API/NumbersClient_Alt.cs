@@ -29,19 +29,32 @@ public class NumbersClient_Alt : INumbersClient
         return result is { Success: true };
     }
 
-    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
+    public async Task<List<List<NumberArrayDto?>>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
     {
-        var listOfNumbers = Enumerable.Range(0, size).ToArray();
-        var tasks = listOfNumbers.Select(async index =>
-        {
-            var response = await _client.GetAsync(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}").ConfigureAwait(false);
-            var result = JsonSerializer.Deserialize<NumberArrayDto>(await response.Content.ReadAsStringAsync());
-            return result;
-        });
+        var result = new List<NumberArrayDto?>();
+        var resultList = new List<List<NumberArrayDto?>>();
 
-        NumberArrayDto?[] res = await Task.WhenAll(tasks);
-        List<NumberArrayDto?> result = res.Where(r => true).ToList();
-        return result;
+        var batchSize = App.Settings.BatchSize;
+        int numberOfBatches = (int)Math.Ceiling((double)size / batchSize);
+
+        for (int i = 0; i < numberOfBatches; i++)
+        {
+            var listOfNumbers = Enumerable.Range(0, size).ToArray();
+            var currentIds = listOfNumbers.Skip(i * batchSize).Take(batchSize);
+
+            var tasks = currentIds.Select(async index =>
+            {
+                var response = await _client.GetAsync(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}").ConfigureAwait(false);
+                var result = JsonSerializer.Deserialize<NumberArrayDto>(await response.Content.ReadAsStringAsync());
+                return result;
+            });
+
+            NumberArrayDto?[] res = await Task.WhenAll(tasks);
+            result = res.Where(r => true).ToList();
+            resultList.Add(result);
+        }
+
+         return resultList;
     }
 
     public async Task<string> Validate(string md5HashedString)

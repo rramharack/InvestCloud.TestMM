@@ -21,6 +21,8 @@ public class AppConfig
 
     public string App => AppSettings.GetSection("App").Value;
     public int DatasetSize => int.Parse(AppSettings.GetSection("DatasetSize").Value);
+    public int PrintSize => int.Parse(AppSettings.GetSection("PrintSize").Value);
+    public int BatchSize => int.Parse(AppSettings.GetSection("BatchSize").Value);
     public string InitializeData => AppSettings.GetSection("InitializeData").Value;
     public string GetDataByValues => AppSettings.GetSection("GetDataByValues").Value;
     public string Validate => AppSettings.GetSection("Validate").Value;
