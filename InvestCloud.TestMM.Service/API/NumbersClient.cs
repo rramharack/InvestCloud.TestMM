@@ -28,14 +28,14 @@ public class NumbersClient : INumbersClient
 
     public async Task<List<List<NumberArrayDto?>>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
     {
-        var listOfNumbers = Enumerable.Range(0, size).ToArray();
         var resultList = new List<List<NumberArrayDto?>>();
 
         var batchSize = App.Settings.BatchSize;
-        int numberOfBatches = (int)Math.Ceiling((double)listOfNumbers.Count() / batchSize);
+        int numberOfBatches = (int)Math.Ceiling((double)size / batchSize);
 
         for (int i = 0; i < numberOfBatches; i++)
         {
+            var listOfNumbers = Enumerable.Range(0, size).ToArray();
             var tasks = listOfNumbers.Select(async index =>
             {
                 var result = await _client.GetAsync<NumberArrayDto>(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}");
