@@ -3,7 +3,7 @@
     "InvestCloud.TestMM.App": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNETCORE_ENVIRONMENT": "PROD"
+        "DOTNETCORE_ENVIRONMENT": "DEV"
       }
     }
   }
