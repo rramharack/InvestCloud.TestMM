@@ -31,7 +31,7 @@ public class NumbersClient : INumbersClient
         var listOfNumbers = Enumerable.Range(0, size).ToArray();
         var resultList = new List<List<NumberArrayDto?>>();
 
-        var batchSize = 100;
+        var batchSize = App.Settings.BatchSize;
         int numberOfBatches = (int)Math.Ceiling((double)listOfNumbers.Count() / batchSize);
 
         for (int i = 0; i < numberOfBatches; i++)
