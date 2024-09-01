@@ -1,6 +1,7 @@
-﻿using InvestCloud.TestMM.Service.Interface;
+﻿using InvestCloud.TestMM.Application.Interfaces;
 
-namespace InvestCloud.TestMM.Service.Models;
+namespace InvestCloud.TestMM.Application.Models;
+
 public abstract class BasePrint : IPrintMatrix
 {
     /// <summary>

@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using InvestCloud.TestMM.Service.Common.Enum;
-using InvestCloud.TestMM.Service.Interface;
-using InvestCloud.TestMM.Service.Models;
+using InvestCloud.TestMM.Application.Common.Enum;
+using InvestCloud.TestMM.Application.Interfaces;
+using InvestCloud.TestMM.Application.Models;
 using Microsoft.Extensions.Logging;
 
-namespace InvestCloud.TestMM.Service.Helper;
+namespace InvestCloud.TestMM.Application.Helper;
 
 public class MatrixOperations : IMatrixOperations
 {
@@ -91,7 +91,7 @@ public class MatrixOperations : IMatrixOperations
 
         // Loop through the arrays X and Y and add the corresponding element for matrixA
         var index = 0;
-        foreach (var item in listForMatrixA.SelectMany(c => c.ToList()))
+        foreach (var item in listForMatrixA.Select(c => c))
         {
             for (int j = 0; j < size; j++)
                 matrixA[index, j] = item.Value[j];
@@ -100,11 +100,11 @@ public class MatrixOperations : IMatrixOperations
 
         // Loop through the arrays X and Y and add the corresponding element for matrixB
         index = 0;
-        foreach (var item in listForMatrixB.SelectMany(c => c.ToList()))
+        foreach (var item in listForMatrixB.Select(c => c))
         {
             for (int j = 0; j < size; j++)
                 matrixB[index, j] = item.Value[j];
-            index++;
+            index++; 
         }
 
         return new MatricesData(matrixA, matrixB);

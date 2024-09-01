@@ -1,11 +1,14 @@
-﻿namespace InvestCloud.TestMM.Service.Common;
+﻿namespace InvestCloud.TestMM.Application.Common;
 
 public class App
 {
     public static AppSettings Settings { get; set; }
 
-    static App() { Settings = new AppSettings(); }
-}
+    static App()
+    {
+        Settings = new AppSettings();
+    }
+} 
 
 public class AppSettings : AppConfig
 {

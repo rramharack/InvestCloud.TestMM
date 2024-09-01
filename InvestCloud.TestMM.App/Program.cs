@@ -1,61 +1,30 @@
-﻿using System.Diagnostics;
-using InvestCloud.TestMM.Service.Common;
-using InvestCloud.TestMM.Service.Interface;
+﻿using InvestCloud.TestMM.Application.Common;
+using InvestCloud.TestMM.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InvestCloud.TestMM.App;
 
-internal class Program
+internal sealed class Program
 {
-    private static readonly int _size = Service.Common.App.Settings.DatasetSize;
-    private static readonly int _printSize = Service.Common.App.Settings.PrintSize;
-
-    static void Main(string[] args)
+    private static Task Main(string[] args)
     {
         try
         {
+            // Dependency Injection
             var services = StartUp.CreateServices();
 
-            var IMatrixOperations = services.GetService<IMatrixOperations>();
-            var IPrintMatrix = services.GetService<IPrintMatrix>();
-            var INumbersClient = services.GetService<INumbersClient>();
-
             // Check if created successfully...
-            var matrixOperations = IMatrixOperations ?? throw new ArgumentNullException(nameof(IMatrixOperations));
-            var printMatrix = IPrintMatrix ?? throw new ArgumentNullException(nameof(IPrintMatrix));
-            var numbersClient = INumbersClient ?? throw new ArgumentNullException(nameof(INumbersClient));
+            var multiplyOperation = services.GetService<IMultiply2D>() ?? throw new ArgumentNullException(nameof(IMultiply2D));
 
-            var timer = new Stopwatch();
-            timer.Start();
-
-            //if (!INumbersClient.InitializeData(_size).Result) //  *** Uses RestSharp (TO USE: Update CreateServices()) *** 
-            if (!INumbersClient.InitializeData(_size).Result)   //  *** Uses HttpClient *** 
-                throw new Exception("ERROR: Cannot Initialize Data !!!");
-
-            var matricesData = IMatrixOperations.GetMultiplyMatricesData(_size) ??
-                               throw new ArgumentNullException($"IMatrixOperations.GetMultiplyMatricesData({_size})");
-
-            int[,] matrixC = IMatrixOperations.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
-            var concatenatedString = string.Join("", matrixC.Cast<int>());
-
-            // Display the elements of the array [TESTING].
-            if (_size < _printSize)
-                IPrintMatrix.Display2DimensionalArray(matricesData.MatrixA, matricesData.MatrixB, matrixC, concatenatedString);
-
-            var md5Hash = IMatrixOperations.GenerateMD5(concatenatedString);
-            timer.Stop();
-
-            TimeSpan timeTaken = timer.Elapsed;
-            IPrintMatrix.DisplayCompletedTimeAndMd5Hash(timeTaken, md5Hash);
-
-            Console.WriteLine(@"Validating:");
-            var msg = INumbersClient.Validate(md5Hash).Result;
-            Console.WriteLine(msg);
+            // Do the actual work of the Mathematical Operation 
+            Console.WriteLine(multiplyOperation.GetComputation().Result);
             Console.WriteLine();
         }
         catch (Exception e)
         {
-            Console.WriteLine(@"ERROR: " + Helper.GetFullMessage(e));
+            Console.WriteLine(@"ERROR: " + e.GetFullMessage());
         }
+
+        return Task.CompletedTask;
     }
 }

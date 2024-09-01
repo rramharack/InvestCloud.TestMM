@@ -1,7 +1,10 @@
-﻿using InvestCloud.TestMM.Service.API;
-using InvestCloud.TestMM.Service.Helper;
-using InvestCloud.TestMM.Service.Interface;
+﻿using InvestCloud.TestMM.Application.Concrete;
+using InvestCloud.TestMM.Application.Helper;
+using InvestCloud.TestMM.Application.Interfaces;
+using InvestCloud.TestMM.Application.Multiplication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 
@@ -23,6 +26,9 @@ public class StartUp
             .AddSingleton<IRestClient, RestClient>()
             //.AddTransient<INumbersClient, NumbersClient>()
             .AddTransient<INumbersClient, NumbersClient_Alt>()
+            .AddTransient<IMultiply2D, Multiply2D>()
+            .AddHttpClient()
+            .RemoveAll<IHttpMessageHandlerBuilderFilter>()
             .BuildServiceProvider();
 
         // Configure Logging

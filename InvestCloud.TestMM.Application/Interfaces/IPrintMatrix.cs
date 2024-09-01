@@ -1,4 +1,4 @@
-﻿namespace InvestCloud.TestMM.Service.Interface;
+﻿namespace InvestCloud.TestMM.Application.Interfaces;
 
 public interface IPrintMatrix
 {

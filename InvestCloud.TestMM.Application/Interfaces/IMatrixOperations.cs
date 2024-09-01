@@ -1,6 +1,6 @@
-﻿using InvestCloud.TestMM.Service.Models;
+﻿using InvestCloud.TestMM.Application.Models;
 
-namespace InvestCloud.TestMM.Service.Interface;
+namespace InvestCloud.TestMM.Application.Interfaces;
 
 public interface IMatrixOperations
 {

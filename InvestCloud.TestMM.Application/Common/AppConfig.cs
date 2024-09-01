@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace InvestCloud.TestMM.Service.Common;
+namespace InvestCloud.TestMM.Application.Common;
 
 public class AppConfig
 {

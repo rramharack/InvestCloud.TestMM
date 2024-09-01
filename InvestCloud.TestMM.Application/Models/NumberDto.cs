@@ -1,4 +1,4 @@
-﻿namespace InvestCloud.TestMM.Service.Models;
+﻿namespace InvestCloud.TestMM.Application.Models;
 
 public class NumberDto : ResponseBase
 {

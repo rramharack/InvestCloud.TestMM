@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InvestCloud.TestMM.Application\InvestCloud.TestMM.Application.csproj" />
     <ProjectReference Include="..\InvestCloud.TestMM.Service\InvestCloud.TestMM.Service.csproj" />
   </ItemGroup>
 

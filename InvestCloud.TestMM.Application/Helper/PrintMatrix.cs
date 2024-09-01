@@ -1,7 +1,7 @@
-﻿using InvestCloud.TestMM.Service.Models;
+﻿using InvestCloud.TestMM.Application.Models;
 using Microsoft.Extensions.Logging;
 
-namespace InvestCloud.TestMM.Service.Helper;
+namespace InvestCloud.TestMM.Application.Helper;
 public class PrintMatrix : BasePrint
 {
     private readonly ILogger<PrintMatrix> _logger;
