@@ -23,12 +23,17 @@ public class StartUp
             })
             .AddScoped<IMatrixOperations, MatrixOperations>()
             .AddScoped<IPrintMatrix, PrintMatrix>()
-            .AddSingleton<IRestClient, RestClient>()
-            //.AddTransient<INumbersClient, NumbersClient>()
-            .AddTransient<INumbersClient, NumbersClient_Alt>()
             .AddTransient<IMultiply2D, Multiply2D>()
+
+            // TO USE: RestSharp *** IMPORTANT:: Comment out HttpClient below !!! 
+            //.AddSingleton<IRestClient, RestClient>()
+            //.AddTransient<INumbersClient, NumbersClient>()
+
+            // TO USE: HttpClient
+            .AddTransient<INumbersClient, NumbersClient_Alt>()
             .AddHttpClient()
             .RemoveAll<IHttpMessageHandlerBuilderFilter>()
+
             .BuildServiceProvider();
 
         // Configure Logging

@@ -4,61 +4,43 @@ using InvestCloud.TestMM.Application.Models;
 using InvestCloud.TestMM.Service.API;
 using Microsoft.Extensions.Logging;
 using RestSharp;
+using System.Text.Json;
 
 namespace InvestCloud.TestMM.Application.Concrete;
 
 public class NumbersClient : INumbersClient
 {
     private readonly ILogger<NumbersClient> _logger;
-    private readonly NumbersClientService _NumbersClientService;
+    private readonly NumbersClientService _numbersClientService;
 
-    public NumbersClient(ILogger<NumbersClient> logger, IRestClient httpClient)
+    public NumbersClient(ILogger<NumbersClient> logger, IRestClient restClient)
     {
-        _NumbersClientService = new NumbersClientService(httpClient);
+        _numbersClientService = new NumbersClientService(restClient);
         _logger = logger;
     }
 
 
-    public Task<bool> InitializeData(int size)
+    public async Task<bool> InitializeData(int size)
     {
-        //TODO: 
-        //_logger.LogInformation("Starting " + App.Settings.App + $"\nSize: {size}\n");
-        //var result = await _client.GetAsync<NumberDto>(App.Settings.InitializeData + $"{size}");
-        //return result is { Success: true };
-        return Task.FromResult(true);
+        _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
+        var result = await _numbersClientService.InitializeData(size, App.Settings.InitializeData);
+        var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
+        return deserializeResult is { Success: true };
     }
 
-    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type,
-        int size)
+    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int arraySize)
     {
-        ////var resultList = new List<List<NumberArrayDto?>>();
-        ////var batchSize = App.Settings.BatchSize;
-        ////int numberOfBatches = (int)Math.Ceiling((double)size / batchSize);
-        ////var listOfNumbers = Enumerable.Range(0, size).ToArray();
+        _logger.LogInformation($"Retrieving (RestSharp) for Matrix{dataSet}: " + $"URL==> {App.Settings.GetDataByValues}\n");
+        var result = await _numbersClientService.RetrievesCollectionBy_DataSet_Type_Index(App.Settings.GetDataByValues, dataSet,
+                                                    type, arraySize, App.Settings.BatchSize);
 
-        ////for (int i = 0; i < numberOfBatches; i++)
-        ////{
-        ////    var tasks = listOfNumbers.Select(async index =>
-        ////    {
-        ////        var result = await _client.GetAsync<NumberArrayDto>(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}");
-        ////        return result;
-        ////    });
-
-        ////    NumberArrayDto?[] res = await Task.WhenAll(tasks);
-        ////    List<NumberArrayDto?> result = res.Where(r => true).ToList();
-        ////    resultList.Add(result);
-        ////}
-        ////return resultList;
-
-
-        return null;
+        return result.Select(x => JsonSerializer.Deserialize<NumberArrayDto>(x)).ToList();
     }
 
-    public Task<string> Validate(string md5HashedString)
+    public async Task<string> Validate(string md5HashedString)
     {
-        //var request = new RestRequest(App.Settings.Validate, Method.Post);
-        //var result = await _client.PostAsync<ValidateDto>(request);
-        //return result != null ? result.Value : App.Settings.VALIDATE_FAILED;
-        return Task.FromResult<string>("");
+        var result = await _numbersClientService.Validate(App.Settings.Validate, md5HashedString);
+        var deserializeResult = JsonSerializer.Deserialize<ValidateDto>(result);
+        return deserializeResult != null ? deserializeResult.Value : App.Settings.VALIDATE_FAILED;
     }
 }

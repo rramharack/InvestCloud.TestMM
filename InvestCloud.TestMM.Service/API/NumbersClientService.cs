@@ -15,38 +15,40 @@ public class NumbersClientService
 
     public async Task<string?> InitializeData(int size, string initializeDataUrl)
     {
-        var result = await _client.GetAsync<string>(initializeDataUrl + $"{size}");
+        var request = new RestRequest(initializeDataUrl + $"{size}");
+        var response = await _client.ExecuteGetAsync(request);
+        return response.Content;
+    }
+
+    public async Task<List<string?>> RetrievesCollectionBy_DataSet_Type_Index(string url, string dataSet,
+                                                                                   string type, int arraySize, int batchSize)
+    {
+        var result = new List<string?>();
+        int numberOfBatches = (int)Math.Ceiling((double)arraySize / batchSize);
+        var listOfNumbers = Enumerable.Range(0, arraySize).ToArray();
+
+        for (int i = 0; i < numberOfBatches; i++)
+        {
+            var tasks = listOfNumbers.Select(async index =>
+            {
+                var request = new RestRequest($"{url}{dataSet}/{type}/{index}");
+                var response = await _client.ExecuteGetAsync(request);
+                return response.Content;
+            });
+
+            string?[] res = await Task.WhenAll(tasks);
+            result = res.Where(r => true).ToList();
+        }
         return result;
     }
 
-    //public async Task<List<List<NumberArrayDto?>>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int size)
-    //{
-    //    var resultList = new List<List<NumberArrayDto?>>();
-    //    var batchSize = App.Settings.BatchSize;
-    //    int numberOfBatches = (int)Math.Ceiling((double)size / batchSize);
-    //    var listOfNumbers = Enumerable.Range(0, size).ToArray();
-
-    //    for (int i = 0; i < numberOfBatches; i++)
-    //    {
-    //        var tasks = listOfNumbers.Select(async index =>
-    //        {
-    //            var result = await _client.GetAsync<NumberArrayDto>(App.Settings.GetDataByValues + $"{dataSet}/{type}/{index}");
-    //            return result;
-    //        });
-
-    //        NumberArrayDto?[] res = await Task.WhenAll(tasks);
-    //        List<NumberArrayDto?> result = res.Where(r => true).ToList();
-    //        resultList.Add(result);
-    //    }
-    //    return resultList;
-    //}
-
-    //public async Task<string> Validate(string md5HashedString)
-    //{
-    //    var request = new RestRequest(App.Settings.Validate, Method.Post);
-    //    var result = await _client.PostAsync<ValidateDto>(request);
-    //    return result != null ? result.Value : App.Settings.VALIDATE_FAILED;
-    //}
+    public async Task<string?> Validate(string url, string md5HashedString)
+    {
+        var request = new RestRequest(url, Method.Post);
+        request.AddBody(md5HashedString);
+        var result = await _client.PostAsync(request);
+        return result.Content;
+    }
 
     #endregion RestSharp
 }

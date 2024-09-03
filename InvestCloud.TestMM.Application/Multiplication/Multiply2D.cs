@@ -30,7 +30,7 @@ public class Multiply2D : IMultiply2D
             throw new Exception("ERROR: Cannot Initialize Data !!!");
 
         var matricesData = _iMatrixOperations.GetMultiplyMatricesData(Size) ??
-                           throw new ArgumentNullException($"IMatrixOperations.GetMultiplyMatricesData({Size})");
+                           throw new ArgumentNullException($"_iMatrixOperations.GetMultiplyMatricesData({Size})");
 
         int[,] matrixC = _iMatrixOperations.MultiplyMatrices(matricesData.MatrixA, matricesData.MatrixB);
         var concatenatedString = string.Join("", matrixC.Cast<int>());

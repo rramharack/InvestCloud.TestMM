@@ -22,7 +22,7 @@ public class NumbersClient_Alt : INumbersClient
 
     public async Task<bool> InitializeData(int size)
     {
-        _logger.LogInformation("Starting " + App.Settings.App + $"\nSize: {size}\n");
+        _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
         var result  = await _numbersClientAltService.InitializeData(size, App.Settings.InitializeData);
         var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
         return deserializeResult is { Success: true };
@@ -30,6 +30,7 @@ public class NumbersClient_Alt : INumbersClient
 
     public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int arraySize)
     {
+        _logger.LogInformation($"Retrieving (HttpClient) for Matrix{dataSet}: " + $"URL==> {App.Settings.GetDataByValues}\n");
         var result = await _numbersClientAltService.RetrievesCollectionBy_DataSet_Type_Index(App.Settings.GetDataByValues, dataSet,
                                                     type, arraySize, App.Settings.BatchSize);
 
