@@ -15,8 +15,8 @@ public class NumbersClient_AltService
 
     public async Task<string> InitializeData(int arraySize, string initializeDataUrl)
     {
-        var response = await _httpClient.GetAsync(initializeDataUrl + $"{arraySize}").ConfigureAwait(false);
-        var result = await response.Content.ReadAsStringAsync();
+        var request = await _httpClient.GetAsync(initializeDataUrl + $"{arraySize}").ConfigureAwait(false);
+        var result = await request.Content.ReadAsStringAsync();
         return result;
     }
 
@@ -31,8 +31,8 @@ public class NumbersClient_AltService
             var currentBatchIds = listOfNumbers.Skip(i * batchSize).Take(batchSize);
             var tasks = currentBatchIds.Select(async index =>
             {
-                var response = await _httpClient.GetAsync($"{url}/{index}").ConfigureAwait(false);
-                var result = await response.Content.ReadAsStringAsync();
+                var request = await _httpClient.GetAsync($"{url}/{index}").ConfigureAwait(false);
+                var result = await request.Content.ReadAsStringAsync();
                 return result;
             });
 
@@ -47,10 +47,10 @@ public class NumbersClient_AltService
     public async Task<string> Validate(string url, string md5HashedString)
     {
         var requestContent = new StringContent(md5HashedString, Encoding.UTF8, "application/json");
-        var response = _httpClient.PostAsync(url, requestContent).Result;
-        response.EnsureSuccessStatusCode();
+        var request = await _httpClient.PostAsync(url, requestContent);
+        request.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadAsStringAsync();
+        var result = await request.Content.ReadAsStringAsync();
         return result;
     }
 

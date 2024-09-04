@@ -20,7 +20,7 @@ public class Multiply2D : IMultiply2D
         _iPrintMatrix = iPrintMatrix;
     }
 
-    public Task<string> GetComputation()
+    public async Task<string> GetComputation()
     {
         var timer = new Stopwatch();
         timer.Start();
@@ -46,8 +46,8 @@ public class Multiply2D : IMultiply2D
         _iPrintMatrix.DisplayCompletedTimeAndMd5Hash(timeTaken, md5Hash);
 
         Console.WriteLine(@"Validating:");
-        var msg = _iNumbersClient.Validate(md5Hash).Result;
+        var msg = await _iNumbersClient.Validate(md5Hash);
 
-        return Task.FromResult(msg);
+        return msg;
     }
 }
