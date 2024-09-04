@@ -18,6 +18,14 @@ public class MatrixOperations : IMatrixOperations
         _iNumbersClient = iNumbersClient;
     }
 
+    /// <summary>
+    /// Cubic Time : O (N^3)
+    /// An algorithm is said to run in cubic time if the running time of the three loops is proportional to the cube of N.
+    /// When N triples, the running time increases by N * N * N. 
+    /// </summary>
+    /// <param name="matrixA"></param>
+    /// <param name="matrixB"></param>
+    /// <returns></returns>
     [Obsolete]
     public int[,] MultiplyMatrices_v1(int[,] matrixA, int[,] matrixB)
     {
@@ -41,6 +49,7 @@ public class MatrixOperations : IMatrixOperations
 
         return new int[0, 0];
     }
+
 
     public int[,] MultiplyMatrices(int[,] matrixA, int[,] matrixB)
     {
