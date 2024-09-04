@@ -82,8 +82,8 @@ public class MatrixOperations : IMatrixOperations
 
     public MatricesData GetMultiplyMatricesData(int size)
     {
-        var listForMatrixA = _iNumbersClient.RetrievesCollectionBy_DataSet_Type_Index(DataSetEnum.A.ToString(), TypeEnum.row.ToString(), size).Result;
-        var listForMatrixB = _iNumbersClient.RetrievesCollectionBy_DataSet_Type_Index(DataSetEnum.B.ToString(), TypeEnum.row.ToString(), size).Result;
+        var listForMatrixA = _iNumbersClient.RetrievesCollectionBy_DataSet_Type_ArraySize(DataSetEnum.A.ToString(), TypeEnum.row.ToString(), size).Result;
+        var listForMatrixB = _iNumbersClient.RetrievesCollectionBy_DataSet_Type_ArraySize(DataSetEnum.B.ToString(), TypeEnum.row.ToString(), size).Result;
 
         //Declare and initialize two two-dimensional arrays, X and Y.
         int[,] matrixA = new int[size, size];

@@ -20,8 +20,7 @@ public class NumbersClientService
         return response.Content;
     }
 
-    public async Task<List<string?>> RetrievesCollectionBy_DataSet_Type_Index(string url, string dataSet,
-                                                                                   string type, int arraySize, int batchSize)
+    public async Task<List<string?>> RetrievesCollectionBy_DataSet_Type_Index(string url, int arraySize, int batchSize)
     {
         var result = new List<string?>();
         int numberOfBatches = (int)Math.Ceiling((double)arraySize / batchSize);
@@ -29,9 +28,10 @@ public class NumbersClientService
 
         for (int i = 0; i < numberOfBatches; i++)
         {
-            var tasks = listOfNumbers.Select(async index =>
+            var currentBatchIds = listOfNumbers.Skip(i * batchSize).Take(batchSize);
+            var tasks = currentBatchIds.Select(async index =>
             {
-                var request = new RestRequest($"{url}{dataSet}/{type}/{index}");
+                var request = new RestRequest($"{url}/{index}");
                 var response = await _client.ExecuteGetAsync(request);
                 return response.Content;
             });

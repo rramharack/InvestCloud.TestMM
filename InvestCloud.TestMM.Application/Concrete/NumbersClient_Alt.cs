@@ -28,11 +28,11 @@ public class NumbersClient_Alt : INumbersClient
         return deserializeResult is { Success: true };
     }
 
-    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_Index(string dataSet, string type, int arraySize)
+    public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_ArraySize(string dataSet, string type, int arraySize)
     {
-        _logger.LogInformation($"Retrieving (HttpClient) for Matrix{dataSet}: " + $"URL==> {App.Settings.GetDataByValues}\n");
-        var result = await _numbersClientAltService.RetrievesCollectionBy_DataSet_Type_Index(App.Settings.GetDataByValues, dataSet,
-                                                    type, arraySize, App.Settings.BatchSize);
+        var url = App.Settings.GetDataByValues + $"{dataSet}/{type}";
+        _logger.LogInformation($"Retrieving (HttpClient) for Matrix{dataSet}: " + $"URL==> {url}\n");
+        var result = await _numbersClientAltService.RetrievesCollectionBy_DataSet_Type_Index(url, arraySize, App.Settings.BatchSize);
 
         return result.SelectMany(x => x).ToList().Select(item => JsonSerializer.Deserialize<NumberArrayDto>(item)).ToList();
     }
