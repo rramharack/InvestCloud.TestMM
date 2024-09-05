@@ -19,7 +19,6 @@ public class NumbersClient : INumbersClient
         _logger = logger;
     }
 
-
     public async Task<bool> InitializeData(int size)
     {
         _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
@@ -34,7 +33,7 @@ public class NumbersClient : INumbersClient
         _logger.LogInformation($"Retrieving (RestSharp) for Matrix{dataSet}: " + $"URL==> {url}\n");
         var result = await _numbersClientService.RetrievesCollectionBy_DataSet_Type_Index(url, arraySize, App.Settings.BatchSize);
 
-        return result.Select(x => JsonSerializer.Deserialize<NumberArrayDto>(x)).ToList();
+        return result.SelectMany(x => x).ToList().Select(item => JsonSerializer.Deserialize<NumberArrayDto>(item)).ToList();
     }
 
     public async Task<string> Validate(string md5HashedString)

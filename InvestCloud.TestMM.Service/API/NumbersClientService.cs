@@ -20,9 +20,9 @@ public class NumbersClientService
         return request.Content;
     }
 
-    public async Task<List<string?>> RetrievesCollectionBy_DataSet_Type_Index(string url, int arraySize, int batchSize)
+    public async Task<List<List<string>>> RetrievesCollectionBy_DataSet_Type_Index(string url, int arraySize, int batchSize)
     {
-        var result = new List<string?>();
+        var resultList = new List<List<string>>();
         int numberOfBatches = (int)Math.Ceiling((double)arraySize / batchSize);
         var listOfNumbers = Enumerable.Range(0, arraySize).ToArray();
 
@@ -32,14 +32,16 @@ public class NumbersClientService
             var tasks = currentBatchIds.Select(async index =>
             {
                 var restRequest = new RestRequest($"{url}/{index}");
-                var request = await _client.ExecuteGetAsync(restRequest);
+                var request = await _client.GetAsync(restRequest);
                 return request.Content;
             });
 
             string?[] res = await Task.WhenAll(tasks);
-            result = res.Where(r => true).ToList();
+            List<string>  result = res.Where(r => true).ToList();
+            resultList.Add(result);
         }
-        return result;
+
+        return resultList;
     }
 
     public async Task<string?> Validate(string url, string md5HashedString)
