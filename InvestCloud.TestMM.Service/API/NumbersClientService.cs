@@ -16,8 +16,8 @@ public class NumbersClientService
     public async Task<string?> InitializeData(int size, string initializeDataUrl)
     {
         var restRequest = new RestRequest(initializeDataUrl + $"{size}");
-        var request = await _client.ExecuteGetAsync(restRequest);
-        return request.Content;
+        var response = await _client.ExecuteGetAsync(restRequest);
+        return response.Content;
     }
 
     public async Task<List<List<string>>> RetrievesCollectionBy_DataSet_Type_Index(string url, int arraySize, int batchSize)
@@ -32,13 +32,13 @@ public class NumbersClientService
             var tasks = currentBatchIds.Select(async index =>
             {
                 var restRequest = new RestRequest($"{url}/{index}");
-                var request = await _client.GetAsync(restRequest);
-                return request.Content;
+                var response = await _client.GetAsync(restRequest);
+                return response.Content;
             });
 
             string?[] res = await Task.WhenAll(tasks);
-            List<string>  result = res.Where(r => true).ToList();
-            resultList.Add(result);
+            List<string?> result = res.Where(r => true).ToList();
+            resultList.Add(result!);
         }
 
         return resultList;
@@ -48,8 +48,8 @@ public class NumbersClientService
     {
         var restRequest = new RestRequest(url, Method.Post);
         restRequest.AddBody(md5HashedString);
-        var request = await _client.PostAsync(restRequest);
-        return request.Content;
+        var response = await _client.PostAsync(restRequest);
+        return response.Content;
     }
 
     #endregion RestSharp
