@@ -20,6 +20,14 @@ public class NumbersClient_Alt : INumbersClient
         _logger = logger;
     }
 
+    public async Task<T> InitializeData<T>(int size)
+    {
+        _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
+        var result = await _numbersClientAltService.InitializeData(size, App.Settings.InitializeData);
+        var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
+        return (T)Convert.ChangeType(deserializeResult is { Success: true }, typeof(T));
+    }
+
     public async Task<bool> InitializeData(int size)
     {
         _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");

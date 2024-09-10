@@ -19,6 +19,19 @@ public class NumbersClient : INumbersClient
         _logger = logger;
     }
 
+    public T Test<T>(int size)
+    {
+        return (T)Convert.ChangeType(size, typeof(T));
+    }
+
+    public async Task<T> InitializeData<T>(int size)
+    {
+        _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
+        var result = await _numbersClientService.InitializeData(size, App.Settings.InitializeData);
+        var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
+        return (T)Convert.ChangeType(deserializeResult is { Success: true }, typeof(T));
+    }
+
     public async Task<bool> InitializeData(int size)
     {
         _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
