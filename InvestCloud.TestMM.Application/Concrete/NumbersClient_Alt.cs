@@ -28,14 +28,6 @@ public class NumbersClient_Alt : INumbersClient
         return (T)Convert.ChangeType(deserializeResult is { Success: true }, typeof(T));
     }
 
-    public async Task<bool> InitializeData(int size)
-    {
-        _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
-        var result  = await _numbersClientAltService.InitializeData(size, App.Settings.InitializeData);
-        var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
-        return deserializeResult is { Success: true };
-    }
-
     public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_ArraySize(string dataSet, string type, int arraySize)
     {
         var url = App.Settings.GetDataByValues + $"{dataSet}/{type}";
