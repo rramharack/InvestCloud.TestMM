@@ -23,10 +23,9 @@ public class Multiply2D : IMultiply2D
     public async Task<string> GetComputation()
     {
         var timer = new Stopwatch();
-        timer.Start();
+        timer.Start(); 
 
-        //if (!INumbersClient.InitializeData(_size).Result) //  *** Uses RestSharp (TO USE: Update CreateServices()) *** 
-        if (!_iNumbersClient.InitializeData(Size).Result)   //  *** Uses HttpClient *** 
+        if (!_iNumbersClient.InitializeData<bool>(Size).Result)
             throw new Exception("ERROR: Cannot Initialize Data !!!");
 
         var matricesData = _iMatrixOperations.GetMultiplyMatricesData(Size) ??

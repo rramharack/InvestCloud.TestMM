@@ -19,12 +19,12 @@ public class NumbersClient : INumbersClient
         _logger = logger;
     }
 
-    public async Task<bool> InitializeData(int size)
+    public async Task<T> InitializeData<T>(int size)
     {
         _logger.LogInformation("Initialize Data: " + App.Settings.App + $"\nSize: {size}\n");
         var result = await _numbersClientService.InitializeData(size, App.Settings.InitializeData);
         var deserializeResult = JsonSerializer.Deserialize<NumberDto>(result);
-        return deserializeResult is { Success: true };
+        return (T)Convert.ChangeType(deserializeResult is { Success: true }, typeof(T));
     }
 
     public async Task<List<NumberArrayDto?>> RetrievesCollectionBy_DataSet_Type_ArraySize(string dataSet, string type, int arraySize)
