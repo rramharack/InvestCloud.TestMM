@@ -44,6 +44,16 @@ public class NumbersClient_AltService
         return resultList;
     }
 
+    /// <summary>
+    /// No Space (md5HashedString)
+    /// C3F26A2073B112708F79FEC9F7B384BA
+    ///
+    /// Space (md5HashedString)
+    /// 60192894E01C8459A2DC1A1A5E95B489
+    /// </summary>
+    /// <param name="url">Endpoint to Validate</param>
+    /// <param name="md5HashedString">Hashed value after calculation</param>
+    /// <returns>message if valid or not</returns>
     public async Task<string> Validate(string url, string md5HashedString)
     {
         var requestContent = new StringContent(md5HashedString, Encoding.UTF8, "application/json");
